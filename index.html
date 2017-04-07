@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="md.css">
+    <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.min.css">
+    <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/marked.min.js"></script>
+    <script src="mdeditor.min.js"></script>
+    <script>
+        $(function() {
+            // 1.Editor 初始化
+            ME.getEditor('.dw-markdown');
+
+            // 2.配合 Dupload.js 进行文件上传
+            // 配置参数详情请至 http://github.com/cdiwo/Dupload.js 查看
+            var du = new Dupload('.dw-markdown .text', {
+                url: '/admin.php/public/upload',
+                clickable: false,
+                onDragOver: function() {
+                    $('.dw-markdown').addClass('mouseover');
+                },
+                onDragLeave: function() {
+                    $('.dw-markdown').removeClass('mouseover');
+                },
+                onUploaded: function(du, file, res) {
+                    if(res.error) return res.error;
+
+                    $('.dw-markdown .text').insertAtCursor('!['+file.name+']('+file.url+')').trigger('valuechange').focus();
+
+                    return true;
+                }
+
+            });
+
+            // 3.绑定图片选择器
+            $('.dw-markdown .fa-picture-o').click(function() {
+                du.select();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="mdeditor" class="dw-markdown row-fluid active">
+    <div class="main">
+        <div class="preview"></div>
+        <textarea class="text mousetrap" name="Post[content]"></textarea>
+    </div>
+    <div class="toolbar">
+        <div class="pull-left tips"><b>提示: </b><span></span></div>
+        <div class="pull-right ">
+            <ul class="inline-menu">
+                <li><a class="fa fa-link" data-toggle="tooltip" data-original-title="插入链接"></a></li>
+                <li><a class="fa fa-picture-o" data-toggle="tooltip" data-original-title="插入图片"></a></li>
+                <li><a class="fa fa-table" data-toggle="tooltip" data-original-title="插入表格"></a></li>
+                <li><i class="fa ">|</i></li>
+                <li class="sidebyside-btn"><a class="fa fa-columns"href="javascript:;" data-action="trigger-sidebyside-mode" data-toggle="tooltip"
+                                              data-original-title="并排模式"></a></li>
+                <li class="writeonly-btn"><a class="fa fa-file-o"href="javascript:;" data-action="trigger-writeonly-mode" data-toggle="tooltip"
+                                             data-original-title="写作模式"></a></li>
+                <li><a class="fa fa-expand" href="javascript:;" data-action="trigger-fullscreen-mode" data-toggle="tooltip"
+                       data-original-title="全屏"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
